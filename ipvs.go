@@ -12,6 +12,19 @@ import (
 	"github.com/hkwi/nlgo"
 )
 
+type IPVSHandle interface {
+	Flush() error
+	GetInfo() (info Info, err error)
+	ListServces() (services []Service, err error)
+	NewService(s *Service) error
+	UpdateService(s *Service) error
+	DelService(s *Service) error
+	ListDestinations(s *Service) (dsts []Destination, err error)
+	NewDestination(s *Service, d *Destination) error
+	UpdateDestination(s *Service, d *Destination) error
+	DelDestination(s *Service, d *Destination) error
+}
+
 // Handle provides a ipvs handle to program ipvs rules.
 type Handle struct {
 	genlHub    *nlgo.GenlHub
@@ -26,7 +39,7 @@ type ResponseHandler struct {
 
 // New provides a new ipvs handle. It will return a valid handle or an error in case an
 // error occurred while creating the handle.
-func New() (*Handle, error) {
+func New() (IPVSHandle, error) {
 	h := &Handle{}
 
 	if out, err := exec.Command("modprobe", "-va", "ip_vs").CombinedOutput(); err != nil {

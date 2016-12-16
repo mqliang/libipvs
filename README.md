@@ -8,16 +8,20 @@ This project provides a pure Go client to communicate with IPVS kernel module us
 
 ## Project Status
 ### Implemented Methods
-* Flush() error
-* GetInfo() (info Info, err error)
-* ListServces() (services []Service, err error)
-* NewService(s *Service) error
-* UpdateService(s *Service) error
-* DelService(s *Service) error
-* ListDestinations(s *Service) (dsts []Destination, err error)
-* NewDestination(s *Service, d *Destination) error
-* UpdateDestination(s *Service, d *Destination) error
-* DelDestination(s *Service, d *Destination) error
+```Golang
+type IPVSHandle interface {
+	Flush() error
+	GetInfo() (info Info, err error)
+	ListServces() (services []Service, err error)
+	NewService(s *Service) error
+	UpdateService(s *Service) error
+	DelService(s *Service) error
+	ListDestinations(s *Service) (dsts []Destination, err error)
+	NewDestination(s *Service, d *Destination) error
+	UpdateDestination(s *Service, d *Destination) error
+	DelDestination(s *Service, d *Destination) error
+}
+```
 
 ### TODO
 * IPVS stats export: decode the `IPVS_SVC_ATTR_STATS` and `IPVS_DEST_ATTR_STATS` into a stats struct.
