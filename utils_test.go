@@ -1,4 +1,4 @@
-package goipvs
+package libipvs
 
 import (
 	"bytes"

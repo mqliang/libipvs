@@ -1,6 +1,6 @@
 // +build linux
 
-package goipvs
+package libipvs
 
 import (
 	"encoding/hex"

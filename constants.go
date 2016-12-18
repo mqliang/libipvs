@@ -1,6 +1,6 @@
 // +build linux
 
-package goipvs
+package libipvs
 
 const (
 	GENL_CTRL_ID = 0x10

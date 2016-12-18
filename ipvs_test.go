@@ -1,5 +1,5 @@
 // +build linux
-package goipvs
+package libipvs
 
 import (
 	"fmt"
