@@ -15,11 +15,11 @@ import (
 type IPVSHandle interface {
 	Flush() error
 	GetInfo() (info Info, err error)
-	ListServces() (services []Service, err error)
+	ListServces() (services []*Service, err error)
 	NewService(s *Service) error
 	UpdateService(s *Service) error
 	DelService(s *Service) error
-	ListDestinations(s *Service) (dsts []Destination, err error)
+	ListDestinations(s *Service) (dsts []*Destination, err error)
 	NewDestination(s *Service, d *Destination) error
 	UpdateDestination(s *Service, d *Destination) error
 	DelDestination(s *Service, d *Destination) error
@@ -68,7 +68,7 @@ func (i *Handle) Flush() error {
 	return i.doCmd(IPVS_CMD_FLUSH, syscall.NLM_F_ACK, emptyAttrs, nil)
 }
 
-func (i *Handle) ListServces() (services []Service, err error) {
+func (i *Handle) ListServces() (services []*Service, err error) {
 	respHandler := &ResponseHandler{
 		Policy: ipvs_cmd_policy,
 		Handle: func(attrs nlgo.AttrMap) error {
@@ -77,7 +77,7 @@ func (i *Handle) ListServces() (services []Service, err error) {
 			} else if service, err := unpackService(serviceAttrs.(nlgo.AttrMap)); err != nil {
 				return err
 			} else {
-				services = append(services, service)
+				services = append(services, &service)
 			}
 			return nil
 		},
@@ -85,7 +85,7 @@ func (i *Handle) ListServces() (services []Service, err error) {
 	return services, i.doCmd(IPVS_CMD_GET_SERVICE, syscall.NLM_F_DUMP, emptyAttrs, respHandler)
 }
 
-func (i *Handle) ListDestinations(s *Service) (dsts []Destination, err error) {
+func (i *Handle) ListDestinations(s *Service) (dsts []*Destination, err error) {
 	respHandler := &ResponseHandler{
 		Policy: ipvs_cmd_policy,
 		Handle: func(attrs nlgo.AttrMap) error {
@@ -94,7 +94,7 @@ func (i *Handle) ListDestinations(s *Service) (dsts []Destination, err error) {
 			} else if dst, err := unpackDest(*s, destAttrs.(nlgo.AttrMap)); err != nil {
 				return err
 			} else {
-				dsts = append(dsts, dst)
+				dsts = append(dsts, &dst)
 			}
 			return nil
 		},
