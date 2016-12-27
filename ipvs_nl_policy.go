@@ -74,6 +74,7 @@ var ipvs_dest_policy = nlgo.MapPolicy{
 		IPVS_DEST_ATTR_INACT_CONNS:   "INACT_CONNS",
 		IPVS_DEST_ATTR_PERSIST_CONNS: "PERSIST_CONNS",
 		IPVS_DEST_ATTR_STATS:         "STATS",
+		IPVS_DEST_ATTR_ADDR_FAMILY:   "AF",
 	},
 	Rule: map[uint16]nlgo.Policy{
 		IPVS_DEST_ATTR_ADDR:          nlgo.BinaryPolicy, // struct in6_addr
@@ -86,6 +87,7 @@ var ipvs_dest_policy = nlgo.MapPolicy{
 		IPVS_DEST_ATTR_INACT_CONNS:   nlgo.U32Policy,
 		IPVS_DEST_ATTR_PERSIST_CONNS: nlgo.U32Policy,
 		IPVS_DEST_ATTR_STATS:         ipvs_stats_policy,
+		IPVS_DEST_ATTR_ADDR_FAMILY:   nlgo.U16Policy,
 	},
 }
 

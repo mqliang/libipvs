@@ -61,8 +61,8 @@ type Service struct {
 // Destination defines an IPVS destination (real server) in its
 // entirety.
 type Destination struct {
-	Address   net.IP
-	Port      uint16
+	Address net.IP
+	Port    uint16
 
 	FwdMethod FwdMethod
 	Weight    uint32
@@ -111,10 +111,11 @@ func (self *Service) attrs(full bool) nlgo.AttrSlice {
 
 // Dump Dest as nl attrs, using the Af of the corresponding Service.
 // If full, includes Dest setting attrs, otherwise only identifying attrs.
-func (self *Destination) attrs(service *Service, full bool) nlgo.AttrSlice {
+func (self *Destination) attrs(full bool) nlgo.AttrSlice {
 	var attrs nlgo.AttrSlice
 
 	attrs = append(attrs,
+		nlattr(IPVS_DEST_ATTR_ADDR_FAMILY, nlgo.U16(self.AddressFamily)),
 		nlattr(IPVS_DEST_ATTR_ADDR, packAddr(self.AddressFamily, self.Address)),
 		nlattr(IPVS_DEST_ATTR_PORT, packPort(self.Port)),
 	)

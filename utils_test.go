@@ -76,14 +76,14 @@ func testServiceEquals(t *testing.T, testService Service, service Service) {
 
 func TestServiceUnpack(t *testing.T) {
 	testService := Service{
-		AddressFamily:        syscall.AF_INET,     // 2
-		Protocol:  syscall.IPPROTO_TCP, // 6
-		Address:      net.ParseIP("10.107.107.0"),
-		Port:      1337,
-		SchedName: "wlc",
-		Flags:     Flags{0, 0},
-		Timeout:   0,
-		Netmask:   0x00000000,
+		AddressFamily: syscall.AF_INET,     // 2
+		Protocol:      syscall.IPPROTO_TCP, // 6
+		Address:       net.ParseIP("10.107.107.0"),
+		Port:          1337,
+		SchedName:     "wlc",
+		Flags:         Flags{0, 0},
+		Timeout:       0,
+		Netmask:       0x00000000,
 	}
 	testBytes := []byte{
 		0x06, 0x00, 0x01, 0x00, // IPVS_SVC_ATTR_AF
@@ -138,12 +138,10 @@ func testDestEquals(t *testing.T, testDest Destination, dest Destination) {
 }
 
 func TestDest(t *testing.T) {
-	testService := Service{
-		AddressFamily: syscall.AF_INET6,
-	}
 	testDest := Destination{
-		Address: net.ParseIP("2001:db8:6b:6b::0"),
-		Port: 1337,
+		AddressFamily: syscall.AF_INET6,
+		Address:       net.ParseIP("2001:db8:6b:6b::0"),
+		Port:          1337,
 
 		FwdMethod: IP_VS_CONN_F_TUNNEL,
 		Weight:    10,
@@ -151,6 +149,7 @@ func TestDest(t *testing.T) {
 		LThresh:   0,
 	}
 	testAttrs := nlgo.AttrSlice{
+		nlattr(IPVS_DEST_ATTR_ADDR_FAMILY, nlgo.U16(syscall.AF_INET6)),
 		nlattr(IPVS_DEST_ATTR_ADDR, nlgo.Binary([]byte{0x20, 0x01, 0x0d, 0xb8, 0x00, 0x6b, 0x00, 0x6b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})),
 		nlattr(IPVS_DEST_ATTR_PORT, nlgo.U16(0x3905)),
 		nlattr(IPVS_DEST_ATTR_FWD_METHOD, nlgo.U32(IP_VS_CONN_F_TUNNEL)),
@@ -160,7 +159,7 @@ func TestDest(t *testing.T) {
 	}
 
 	// pack
-	packAttrs := testDest.attrs(&testService, true)
+	packAttrs := testDest.attrs(true)
 	packBytes := packAttrs.Bytes()
 
 	if !bytes.Equal(packBytes, testAttrs.Bytes()) {
@@ -170,7 +169,7 @@ func TestDest(t *testing.T) {
 	// unpack
 	if unpackedAttrs, err := ipvs_dest_policy.Parse(packBytes); err != nil {
 		t.Fatalf("error ipvs_dest_policy.Parse: %s", err)
-	} else if unpackedDest, err := unpackDest(testService, unpackedAttrs.(nlgo.AttrMap)); err != nil {
+	} else if unpackedDest, err := unpackDest(unpackedAttrs.(nlgo.AttrMap)); err != nil {
 		t.Fatalf("error unpackDest: %s", err)
 	} else {
 		testDestEquals(t, testDest, unpackedDest)

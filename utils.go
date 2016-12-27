@@ -1,15 +1,14 @@
 package libipvs
 
 import (
-	"encoding/binary"
 	"bytes"
-	"syscall"
-	"net"
+	"encoding/binary"
 	"fmt"
+	"net"
+	"syscall"
 
 	"github.com/hkwi/nlgo"
 )
-
 
 // Helper to build an nlgo.Attr
 func nlattr(typ uint16, value nlgo.NlaValue) nlgo.Attr {
@@ -128,12 +127,14 @@ func unpackService(attrs nlgo.AttrMap) (Service, error) {
 	return service, nil
 }
 
-func unpackDest(service Service, attrs nlgo.AttrMap) (Destination, error) {
+func unpackDest(attrs nlgo.AttrMap) (Destination, error) {
 	var dest Destination
 	var addr []byte
 
 	for _, attr := range attrs.Slice() {
 		switch attr.Field() {
+		case IPVS_DEST_ATTR_ADDR_FAMILY:
+			dest.AddressFamily = (AddressFamily)(attr.Value.(nlgo.U16))
 		case IPVS_DEST_ATTR_ADDR:
 			addr = ([]byte)(attr.Value.(nlgo.Binary))
 		case IPVS_DEST_ATTR_PORT:
@@ -155,7 +156,7 @@ func unpackDest(service Service, attrs nlgo.AttrMap) (Destination, error) {
 		}
 	}
 
-	if addrIP, err := unpackAddr(addr, service.AddressFamily); err != nil {
+	if addrIP, err := unpackAddr(addr, dest.AddressFamily); err != nil {
 		return dest, fmt.Errorf("ipvs:Dest.unpack: addr: %s", err)
 	} else {
 		dest.Address = addrIP
