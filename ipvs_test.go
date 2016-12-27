@@ -276,5 +276,4 @@ func TestDestination(t *testing.T) {
 			assert.NoError(t, err)
 		}
 	}
-	// clearIpvs(t)
 }
