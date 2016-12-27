@@ -111,6 +111,8 @@ func unpackService(attrs nlgo.AttrMap) (Service, error) {
 			service.Timeout = (uint32)(attr.Value.(nlgo.U32))
 		case IPVS_SVC_ATTR_NETMASK:
 			service.Netmask = (uint32)(attr.Value.(nlgo.U32))
+		case IPVS_SVC_ATTR_STATS:
+			service.Stats = unpackStats(attr)
 		}
 	}
 
@@ -154,6 +156,8 @@ func unpackDest(attrs nlgo.AttrMap) (Destination, error) {
 			dest.InactConns = (uint32)(attr.Value.(nlgo.U32))
 		case IPVS_DEST_ATTR_PERSIST_CONNS:
 			dest.PersistConns = (uint32)(attr.Value.(nlgo.U32))
+		case IPVS_DEST_ATTR_STATS:
+			dest.Stats = unpackStats(attr)
 		}
 	}
 
@@ -177,4 +181,34 @@ func unpackInfo(attrs nlgo.AttrMap) (info Info, err error) {
 	}
 
 	return
+}
+
+func unpackStats(attrs nlgo.Attr) Stats {
+	var stats Stats
+	for _, attr := range attrs.Value.(nlgo.AttrMap).Slice() {
+		switch attr.Field() {
+		case IPVS_STATS_ATTR_CONNS:
+			stats.Connections = (uint32)(attr.Value.(nlgo.U32))
+		case IPVS_STATS_ATTR_INPKTS: /* incoming packets */
+			stats.PacketsIn = (uint32)(attr.Value.(nlgo.U32))
+		case IPVS_STATS_ATTR_OUTPKTS: /* outgoing packets */
+			stats.PacketsOut = (uint32)(attr.Value.(nlgo.U32))
+		case IPVS_STATS_ATTR_INBYTES: /* incoming bytes */
+			stats.BytesIn = (uint64)(attr.Value.(nlgo.U64))
+		case IPVS_STATS_ATTR_OUTBYTES: /* outgoing bytes */
+			stats.BytesOut = (uint64)(attr.Value.(nlgo.U64))
+		case IPVS_STATS_ATTR_CPS: /* current connection rate */
+			stats.CPS = (uint32)(attr.Value.(nlgo.U32))
+		case IPVS_STATS_ATTR_INPPS: /* current in packet rate */
+			stats.PPSIn = (uint32)(attr.Value.(nlgo.U32))
+		case IPVS_STATS_ATTR_OUTPPS: /* current out packet rate */
+			stats.PPSOut = (uint32)(attr.Value.(nlgo.U32))
+		case IPVS_STATS_ATTR_INBPS: /* current in byte rate */
+			stats.BPSIn = (uint32)(attr.Value.(nlgo.U32))
+		case IPVS_STATS_ATTR_OUTBPS: /* current out byte rate */
+			stats.BPSOut = (uint32)(attr.Value.(nlgo.U32))
+		}
+	}
+
+	return stats
 }

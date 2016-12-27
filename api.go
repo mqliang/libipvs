@@ -56,6 +56,7 @@ type Service struct {
 	Netmask       uint32
 	AddressFamily AddressFamily
 	PEName        string
+	Stats         Stats
 }
 
 // Destination defines an IPVS destination (real server) in its
@@ -73,8 +74,20 @@ type Destination struct {
 	ActiveConns  uint32
 	InactConns   uint32
 	PersistConns uint32
+	Stats        Stats
+}
 
-	AddressFamily AddressFamily
+type Stats struct {
+	Connections uint32
+	PacketsIn   uint32
+	PacketsOut  uint32
+	BytesIn     uint64
+	BytesOut    uint64
+	CPS         uint32
+	PPSIn       uint32
+	PPSOut      uint32
+	BPSIn       uint32
+	BPSOut      uint32
 }
 
 // Pack Service to a set of nlattrs.
