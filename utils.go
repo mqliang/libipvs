@@ -114,7 +114,8 @@ func unpackService(attrs nlgo.AttrMap) (Service, error) {
 		}
 	}
 
-	if addrIP, err := unpackAddr(addr, service.AddressFamily); err != nil {
+	// TOTE: ipvs Service with Fwmarks has no Address, so we just ignore the error
+	if addrIP, err := unpackAddr(addr, service.AddressFamily); err != nil && service.FWMark != 0 {
 		return service, fmt.Errorf("ipvs:Service.unpack: addr: %s", err)
 	} else {
 		service.Address = addrIP
