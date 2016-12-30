@@ -15,7 +15,7 @@ import (
 type IPVSHandle interface {
 	Flush() error
 	GetInfo() (info Info, err error)
-	ListServces() (services []*Service, err error)
+	ListServices() (services []*Service, err error)
 	NewService(s *Service) error
 	UpdateService(s *Service) error
 	DelService(s *Service) error
@@ -68,7 +68,7 @@ func (i *Handle) Flush() error {
 	return i.doCmd(IPVS_CMD_FLUSH, syscall.NLM_F_ACK, emptyAttrs, nil)
 }
 
-func (i *Handle) ListServces() (services []*Service, err error) {
+func (i *Handle) ListServices() (services []*Service, err error) {
 	respHandler := &ResponseHandler{
 		Policy: ipvs_cmd_policy,
 		Handle: func(attrs nlgo.AttrMap) error {
