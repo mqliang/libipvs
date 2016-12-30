@@ -62,8 +62,9 @@ type Service struct {
 // Destination defines an IPVS destination (real server) in its
 // entirety.
 type Destination struct {
-	Address net.IP
-	Port    uint16
+	AddressFamily AddressFamily
+	Address       net.IP
+	Port          uint16
 
 	FwdMethod FwdMethod
 	Weight    uint32
