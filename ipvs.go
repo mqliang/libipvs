@@ -91,7 +91,7 @@ func (i *Handle) ListDestinations(s *Service) (dsts []*Destination, err error) {
 		Handle: func(attrs nlgo.AttrMap) error {
 			if destAttrs := attrs.Get(IPVS_CMD_ATTR_DEST); destAttrs == nil {
 				return fmt.Errorf("IPVS_CMD_GET_DEST without IPVS_CMD_ATTR_DEST")
-			} else if dst, err := unpackDest(*s, destAttrs.(nlgo.AttrMap)); err != nil {
+			} else if dst, err := unpackDest(destAttrs.(nlgo.AttrMap)); err != nil {
 				return err
 			} else {
 				dsts = append(dsts, &dst)
@@ -202,7 +202,7 @@ func (i *Handle) fillAttrs(s *Service, d *Destination, sfull, dfull bool) nlgo.A
 		attrs = append(attrs, nlattr(IPVS_CMD_ATTR_SERVICE, s.attrs(sfull)))
 	}
 	if d != nil {
-		attrs = append(attrs, nlattr(IPVS_CMD_ATTR_DEST, d.attrs(s, dfull)))
+		attrs = append(attrs, nlattr(IPVS_CMD_ATTR_DEST, d.attrs(dfull)))
 	}
 	return attrs
 }

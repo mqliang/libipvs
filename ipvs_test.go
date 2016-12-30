@@ -111,7 +111,14 @@ func checkService(t *testing.T, checkPresent bool, protocol, schedMethod, servic
 	}
 }
 
+func clearIpvsState(t *testing.T) {
+	_, err := exec.Command("ipvsadm", "--clear").CombinedOutput()
+	require.NoError(t, err)
+}
+
 func TestService(t *testing.T) {
+	defer clearIpvsState(t)
+
 	i, err := New()
 	require.NoError(t, err)
 
@@ -161,10 +168,11 @@ func TestService(t *testing.T) {
 			checkService(t, false, protocol, lastMethod, serviceAddress)
 		}
 	}
-
 }
 
 func TestDestination(t *testing.T) {
+	defer clearIpvsState(t)
+
 	i, err := New()
 	require.NoError(t, err)
 
