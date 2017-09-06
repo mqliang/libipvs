@@ -28,6 +28,12 @@ type IPVSHandle interface {
 * IPVS state synchronization: support configuring the in-kernel IPVS sync daemon for supporting failover
   between IPVS routers, as done with keepalived `lvs_sync_daemon_interface`
 
+### Acknowledgments
+* The code is first copied from https://github.com/qmsk/clusterf, so all kudos goes @qmsk. Move the code out into this dedicated project, with a better API, proper tests and concurrency safety, so everyone would benefit from having a good and well-tested package.
+
+### Alternatives
+Other pure go implementation of IPVS that maybe useful:
+* https://github.com/tehnerd/gnl2go/
 
 ## Example code
 
