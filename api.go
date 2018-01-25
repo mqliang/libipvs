@@ -114,7 +114,7 @@ func (self *Service) attrs(full bool) nlgo.AttrSlice {
 	if full {
 		attrs = append(attrs,
 			nlattr(IPVS_SVC_ATTR_SCHED_NAME, nlgo.NulString(self.SchedName)),
-			nlattr(IPVS_SVC_ATTR_FLAGS, pack(&self.Flags)),
+			nlattr(IPVS_SVC_ATTR_FLAGS, self.Flags.pack()),
 			nlattr(IPVS_SVC_ATTR_TIMEOUT, nlgo.U32(self.Timeout)),
 			nlattr(IPVS_SVC_ATTR_NETMASK, nlgo.U32(self.Netmask)),
 		)

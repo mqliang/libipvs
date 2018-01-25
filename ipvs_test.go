@@ -21,6 +21,10 @@ var (
 		SourceHashing,
 	}
 
+	schedFlags     = Flags{Flags: IP_VS_SVC_F_SCHED1 | IP_VS_SVC_F_SCHED2 | IP_VS_SVC_F_SCHED3, Mask: ^uint32(0)}
+	schedFlagNames = "(flag-1,flag-2,flag-3)"
+	shFlagNames    = "(sh-fallback,sh-port,flag-3)"
+
 	protocols = []string{
 		"TCP",
 		"UDP",
@@ -97,6 +101,11 @@ func checkService(t *testing.T, checkPresent bool, protocol, schedMethod, servic
 			assert.Equal(t, protocol, parts[0])
 			assert.Equal(t, serviceAddress, parts[2])
 			assert.Equal(t, schedMethod, parts[3])
+			if schedMethod == SourceHashing {
+				assert.Equal(t, shFlagNames, parts[4])
+			} else {
+				assert.Equal(t, schedFlagNames, parts[4])
+			}
 
 			if !checkPresent {
 				t.Fatalf("Did not expect the service %s in ipvs output", serviceAddress)
@@ -129,6 +138,7 @@ func TestService(t *testing.T) {
 			s := Service{
 				AddressFamily: syscall.AF_INET,
 				SchedName:     schedMethod,
+				Flags:         schedFlags,
 			}
 
 			switch protocol {
@@ -151,6 +161,31 @@ func TestService(t *testing.T) {
 			err := i.NewService(&s)
 			assert.NoError(t, err)
 			checkService(t, true, protocol, schedMethod, serviceAddress)
+
+			svcs, err := i.ListServices()
+			assert.NoError(t, err)
+			var listed *Service
+			assert.NotEmpty(t, svcs, "should list at least one virtual service")
+			for _, svc := range svcs {
+				if svc.FWMark > 0 && svc.FWMark == s.FWMark {
+					listed = svc
+					break
+				}
+				if svc.Address.Equal(s.Address) && svc.Port == s.Port && svc.Protocol == s.Protocol {
+					listed = svc
+					break
+				}
+			}
+			assert.NotNil(t, listed, "could not list %v", s)
+			if listed != nil {
+				assert.Equal(t, s.AddressFamily, listed.AddressFamily)
+				assert.Equal(t, s.SchedName, listed.SchedName)
+				expectedFlags := s.Flags
+				expectedFlags.Flags |= IP_VS_SVC_F_HASHED
+				assert.Equal(t, expectedFlags, listed.Flags)
+				assert.Equal(t, s.Netmask, listed.Netmask)
+			}
+
 			var lastMethod string
 			for _, updateSchedMethod := range schedMethods {
 				if updateSchedMethod == schedMethod {
@@ -182,6 +217,7 @@ func TestDestination(t *testing.T) {
 		s := Service{
 			AddressFamily: syscall.AF_INET,
 			SchedName:     RoundRobin,
+			Flags:         schedFlags,
 		}
 
 		switch protocol {

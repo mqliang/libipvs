@@ -1,11 +1,11 @@
 package libipvs
 
 import (
-	"bytes"
-	"encoding/binary"
 	"fmt"
 	"net"
 	"syscall"
+
+	"unsafe"
 
 	"github.com/hkwi/nlgo"
 )
@@ -15,19 +15,24 @@ func nlattr(typ uint16, value nlgo.NlaValue) nlgo.Attr {
 	return nlgo.Attr{Header: syscall.NlAttr{Type: typ}, Value: value}
 }
 
-// Helpers for struct <-> nlgo.Binary
-func unpack(value nlgo.Binary, out interface{}) error {
-	return binary.Read(bytes.NewReader(([]byte)(value)), binary.BigEndian, out)
+const sizeOfFlags = 0x8
+
+func (f *Flags) unpack(value nlgo.Binary) error {
+	if len(value) != sizeOfFlags {
+		return fmt.Errorf("ipvs: unexpected flags=%v", value)
+	}
+	var buf [sizeOfFlags]byte
+	copy(buf[:], value)
+	tmp := (*Flags)(unsafe.Pointer(&buf))
+	f.Flags = tmp.Flags
+	f.Mask = tmp.Mask
+	return nil
 }
 
-func pack(in interface{}) nlgo.Binary {
-	var buf bytes.Buffer
-
-	if err := binary.Write(&buf, binary.BigEndian, in); err != nil {
-		panic(err)
-	}
-
-	return nlgo.Binary(buf.Bytes())
+func (f *Flags) pack() nlgo.Binary {
+	buf := make([]byte, sizeOfFlags)
+	copy(buf, (*[sizeOfFlags]byte)(unsafe.Pointer(f))[:])
+	return nlgo.Binary(buf)
 }
 
 // Helpers for net.IP <-> nlgo.Binary
@@ -117,13 +122,13 @@ func unpackService(attrs nlgo.AttrMap) (Service, error) {
 	}
 
 	// TOTE: ipvs Service with Fwmarks has no Address, so we just ignore the error
-	if addrIP, err := unpackAddr(addr, service.AddressFamily); err != nil && service.FWMark != 0 {
+	if addrIP, err := unpackAddr(addr, service.AddressFamily); err != nil && service.FWMark == 0 {
 		return service, fmt.Errorf("ipvs:Service.unpack: addr: %s", err)
 	} else {
 		service.Address = addrIP
 	}
 
-	if err := unpack(flags, &service.Flags); err != nil {
+	if err := service.Flags.unpack(flags); err != nil {
 		return service, fmt.Errorf("ipvs:Service.unpack: flags: %s", err)
 	}
 
