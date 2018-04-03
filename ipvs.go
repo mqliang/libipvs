@@ -25,6 +25,10 @@ type IPVSHandle interface {
 	DelDestination(s *Service, d *Destination) error
 }
 
+type IPVSHandleParams struct {
+	loadModule bool
+}
+
 // Handle provides a ipvs handle to program ipvs rules.
 type Handle struct {
 	genlHub    *nlgo.GenlHub
@@ -37,13 +41,28 @@ type ResponseHandler struct {
 	Handle func(attrs nlgo.AttrMap) error
 }
 
-// New provides a new ipvs handle. It will return a valid handle or an error in case an
-// error occurred while creating the handle.
+// Returns default IPVS handle parameters
+func DefaultIPVSHandleParams() IPVSHandleParams {
+	return IPVSHandleParams{loadModule: true}
+}
+
+// New provides a new ipvs handle with default params.
+// It will return a valid handle or an error in case an error occurred
+// while creating the handle.
 func New() (IPVSHandle, error) {
+	return NewIPVSHandle(DefaultIPVSHandleParams())
+}
+
+// NewIPVSHandle provides a new ipvs handle with custom params.
+// It will return a valid handle or an error in case an error occurred
+// while creating the handle.
+func NewIPVSHandle(params IPVSHandleParams) (IPVSHandle, error) {
 	h := &Handle{}
 
-	if out, err := exec.Command("modprobe", "-va", "ip_vs").CombinedOutput(); err != nil {
-		return nil, fmt.Errorf("Running modprobe ip_vs failed with message: `%s`, error: %v", strings.TrimSpace(string(out)), err)
+	if params.loadModule {
+		if out, err := exec.Command("modprobe", "-va", "ip_vs").CombinedOutput(); err != nil {
+			return nil, fmt.Errorf("Running modprobe ip_vs failed with message: `%s`, error: %v", strings.TrimSpace(string(out)), err)
+		}
 	}
 
 	if genlHub, err := nlgo.NewGenlHub(); err != nil {
