@@ -1,13 +1,11 @@
 # libipvs: Pure Go lib to work with IPVS
-----
 
-Netlink socket are used to communicate with various kernel subsystems as an RPC system.
+This project provides a pure Go client to communicate with IPVS kernel module using generic netlink socket. Netlink socket are used to communicate with various kernel subsystems as an RPC system.
 
-This project provides a pure Go client to communicate with IPVS kernel module using generic netlink socket.
+[![Go Report Card](https://goreportcard.com/badge/github.com/mqliang/libipvs)]
+[![Documentation](https://godoc.org/github.com/mqliang/libipvs?status.svg)]
 
-
-## Project Status
-### Implemented Methods
+## API
 ```Golang
 type IPVSHandle interface {
 	Flush() error
@@ -23,16 +21,17 @@ type IPVSHandle interface {
 }
 ```
 
-### TODO
+## TODO
 * IPVS state synchronization: support configuring the in-kernel IPVS sync daemon for supporting failover
   between IPVS routers, as done with keepalived `lvs_sync_daemon_interface`
 
-### Acknowledgments
+## Acknowledgments
 * The code is first “borrowed” from https://github.com/qmsk/clusterf, so all kudos goes @SpComb. I moved the code out into this dedicated project, with a better API, proper tests and concurrency safety, so everyone would benefit from having a good and well-tested package.
 
-### Alternatives
+## Alternatives
 Other pure go implementation of IPVS that maybe useful:
-* https://github.com/tehnerd/gnl2go/
+* https://github.com/tehnerd/gnl2go
+* https://github.com/docker/libnetwork/ipvs
 
 ## Example code
 
