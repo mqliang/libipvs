@@ -2,8 +2,8 @@
 
 This project provides a pure Go client to communicate with IPVS kernel module using generic netlink socket. Netlink socket are used to communicate with various kernel subsystems as an RPC system.
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/mqliang/libipvs)]
-[![Documentation](https://godoc.org/github.com/mqliang/libipvs?status.svg)]
+![Go Report Card](https://goreportcard.com/badge/github.com/mqliang/libipvs)
+![Documentation](https://godoc.org/github.com/mqliang/libipvs?status.svg)
 
 ## API
 ```Golang
