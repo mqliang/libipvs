@@ -80,7 +80,7 @@ func main() {
 		panic(err)
 	}
 
-	svcs, err = h.ListServces()
+	svcs, err = h.ListServices()
 	if err != nil {
 		panic(err)
 	}
