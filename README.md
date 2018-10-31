@@ -5,6 +5,9 @@ This project provides a pure Go client to communicate with IPVS kernel module us
 [![Go Report Card](https://goreportcard.com/badge/github.com/mqliang/libipvs)](https://goreportcard.com/report/github.com/mqliang/libipvs)
 [![Documentation](https://godoc.org/github.com/mqliang/libipvs?status.svg)](https://godoc.org/github.com/mqliang/libipvs)
 
+## Requirements
+* Linux platform
+
 ## API
 ```Golang
 type IPVSHandle interface {
