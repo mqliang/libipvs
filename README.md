@@ -34,7 +34,7 @@ type IPVSHandle interface {
 ## Alternatives
 Other pure go implementation of IPVS that maybe useful:
 * https://github.com/tehnerd/gnl2go
-* https://github.com/docker/libnetwork/ipvs
+* https://github.com/moby/ipvs
 
 ## Example code
 
