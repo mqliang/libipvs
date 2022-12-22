@@ -1,4 +1,4 @@
-// +build linux
+//go:build linux
 
 package libipvs
 
@@ -70,11 +70,11 @@ const (
 // Used inside nested attribute IPVS_CMD_ATTR_SERVICE
 const (
 	IPVS_SVC_ATTR_UNSPEC   uint16 = iota
-	IPVS_SVC_ATTR_AF           /* address family */
-	IPVS_SVC_ATTR_PROTOCOL     /* virtual service protocol */
-	IPVS_SVC_ATTR_ADDR         /* virtual service address */
-	IPVS_SVC_ATTR_PORT         /* virtual service port */
-	IPVS_SVC_ATTR_FWMARK       /* firewall mark of service */
+	IPVS_SVC_ATTR_AF              /* address family */
+	IPVS_SVC_ATTR_PROTOCOL        /* virtual service protocol */
+	IPVS_SVC_ATTR_ADDR            /* virtual service address */
+	IPVS_SVC_ATTR_PORT            /* virtual service port */
+	IPVS_SVC_ATTR_FWMARK          /* firewall mark of service */
 
 	IPVS_SVC_ATTR_SCHED_NAME /* name of scheduler */
 	IPVS_SVC_ATTR_FLAGS      /* virtual service flags */
@@ -90,8 +90,8 @@ const (
 // Used inside nested attribute IPVS_CMD_ATTR_DEST
 const (
 	IPVS_DEST_ATTR_UNSPEC uint16 = iota
-	IPVS_DEST_ATTR_ADDR       /* real server address */
-	IPVS_DEST_ATTR_PORT       /* real server port */
+	IPVS_DEST_ATTR_ADDR          /* real server address */
+	IPVS_DEST_ATTR_PORT          /* real server port */
 
 	IPVS_DEST_ATTR_FWD_METHOD /* forwarding method */
 	IPVS_DEST_ATTR_WEIGHT     /* destination weight */
@@ -112,20 +112,20 @@ const (
 // Used inside nested attribute IPVS_CMD_ATTR_DAEMON
 const (
 	IPVS_DAEMON_ATTR_UNSPEC    uint16 = iota
-	IPVS_DAEMON_ATTR_STATE         /* sync daemon state (master/backup) */
-	IPVS_DAEMON_ATTR_MCAST_IFN     /* multicast interface name */
-	IPVS_DAEMON_ATTR_SYNC_ID       /* SyncID we belong to */
+	IPVS_DAEMON_ATTR_STATE            /* sync daemon state (master/backup) */
+	IPVS_DAEMON_ATTR_MCAST_IFN        /* multicast interface name */
+	IPVS_DAEMON_ATTR_SYNC_ID          /* SyncID we belong to */
 )
 
 // Attributes used to describe service or destination entry statistics
 // Used inside nested attributes IPVS_SVC_ATTR_STATS and IPVS_DEST_ATTR_STATS
 const (
 	IPVS_STATS_ATTR_UNSPEC   uint16 = iota
-	IPVS_STATS_ATTR_CONNS        /* connections scheduled */
-	IPVS_STATS_ATTR_INPKTS       /* incoming packets */
-	IPVS_STATS_ATTR_OUTPKTS      /* outgoing packets */
-	IPVS_STATS_ATTR_INBYTES      /* incoming bytes */
-	IPVS_STATS_ATTR_OUTBYTES     /* outgoing bytes */
+	IPVS_STATS_ATTR_CONNS           /* connections scheduled */
+	IPVS_STATS_ATTR_INPKTS          /* incoming packets */
+	IPVS_STATS_ATTR_OUTPKTS         /* outgoing packets */
+	IPVS_STATS_ATTR_INBYTES         /* incoming bytes */
+	IPVS_STATS_ATTR_OUTBYTES        /* outgoing bytes */
 
 	IPVS_STATS_ATTR_CPS    /* current connection rate */
 	IPVS_STATS_ATTR_INPPS  /* current in packet rate */
@@ -137,8 +137,8 @@ const (
 /* Attributes used in response to IPVS_CMD_GET_INFO command */
 const (
 	IPVS_INFO_ATTR_UNSPEC        uint16 = iota
-	IPVS_INFO_ATTR_VERSION           /* IPVS version number */
-	IPVS_INFO_ATTR_CONN_TAB_SIZE     /* size of connection hash table */
+	IPVS_INFO_ATTR_VERSION              /* IPVS version number */
+	IPVS_INFO_ATTR_CONN_TAB_SIZE        /* size of connection hash table */
 )
 
 //  IPVS sync daemon states
