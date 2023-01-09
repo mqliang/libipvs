@@ -1,4 +1,4 @@
-// +build linux
+//go:build linux
 
 package libipvs
 
@@ -26,7 +26,7 @@ type IPVSHandle interface {
 }
 
 type IPVSHandleParams struct {
-	loadModule bool
+	LoadModule bool
 }
 
 // Handle provides a ipvs handle to program ipvs rules.
@@ -43,7 +43,7 @@ type ResponseHandler struct {
 
 // Returns default IPVS handle parameters
 func DefaultIPVSHandleParams() IPVSHandleParams {
-	return IPVSHandleParams{loadModule: true}
+	return IPVSHandleParams{LoadModule: true}
 }
 
 // New provides a new ipvs handle with default params.
@@ -59,7 +59,7 @@ func New() (IPVSHandle, error) {
 func NewIPVSHandle(params IPVSHandleParams) (IPVSHandle, error) {
 	h := &Handle{}
 
-	if params.loadModule {
+	if params.LoadModule {
 		if out, err := exec.Command("modprobe", "-va", "ip_vs").CombinedOutput(); err != nil {
 			return nil, fmt.Errorf("Running modprobe ip_vs failed with message: `%s`, error: %v", strings.TrimSpace(string(out)), err)
 		}
